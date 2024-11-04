@@ -1,36 +1,70 @@
 from flask import jsonify
-from jinja2.lexer import Failure
 from yt_dlp import YoutubeDL
+from graphql import  GraphQLError
 
 class YouTubeDownloader:
-    def __init__(self, request_link : str):
-        self.options = None
-        self.download_link = request_link
+    def __init__(self, download_link : str):
+        self.formats_list = []
+        self.download_link = download_link
+        self.options = {}
+        self.response_schema = {}
 
-            # video_url = "https://www.youtube.com/watch?v=rY-DSC8U6sE"
     def init_options(self):
+        # Set options for the downloader
+        self.options =  {
+            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+            'outtmpl': '%(title)s.%(ext)s'  # Customize output filename
+        }
 
-            # Set options for the downloader
-            self.options  = {
-                'format': 'best[ext=mp4]',
-                'outtmpl': '%(title)s.%(ext)s'
-            }
-    def get_download_link(self):
+    def get_all_available_formats(self, formats:list) -> list:
+
+        for found_formats in formats:
+            if found_formats['ext'] in ["webm", "mp4"]:
+                self.formats_list.append(
+                    {
+                        "ext": found_formats.get('ext'),
+                        "url": found_formats.get('url'),
+                        "format": found_formats.get('format'),
+                        "resolution": found_formats.get('resolution'),
+                        "width": found_formats.get('width'),
+                        "height": found_formats.get('height'),
+                        "video_extension": found_formats.get('video_ext'),
+                        "audio_extension": found_formats.get('audio_ext'),
+                        "filesize_approx": found_formats.get('filesize_approx'),
+                        "filesize": found_formats.get('filesize'),
+                    }
+                )
+
+        return self.formats_list
+
+    def generate_video_response_schema(self, video_info_dictionary: dict,found_video_formats:list) -> object:
+        self.response_schema = {
+            "title": video_info_dictionary.get('title'),
+            "video_duration": video_info_dictionary.get('duration'),
+            "ext": video_info_dictionary.get('ext'),
+            "filesize_approx": video_info_dictionary.get('filesize_approx'),
+            "highest_width": video_info_dictionary.get('width'),
+            "highest_height": video_info_dictionary.get('height'),
+            "highest_resolution": video_info_dictionary.get('resolution'),
+            "webpage_url": video_info_dictionary.get('webpage_url'),
+            "formats": found_video_formats,
+        }
+
+
+    def get_video_download_data(self):
+        self.init_options()
         # # Create a YoutubeDL object and download the video
-        print("The download link provided: ", self.download_link)
-        with YoutubeDL(self.options) as you_tube_downloader:
-            # try:
-            print("Extracting media information... ")
+        with YoutubeDL(self.options) as youtube_downloader:
+            try:
+                video_info_dictionary = youtube_downloader.extract_info(self.download_link, download=False)
+            except:
+                raise GraphQLError('Sorry! Could not retrieve video info!')
 
-            video_info = you_tube_downloader.extract_info(self.download_link, download=False)
-            print("Media Title: ", video_info.get("title"))
-            print("Media width: ", video_info.get("title"))
-            print("Media Height: ", video_info.get("title"))
+        found_video_formats = self.get_all_available_formats(video_info_dictionary.get('formats'))
+        self.generate_video_response_schema(video_info_dictionary, found_video_formats)
 
-            # youtube_url = jsonify(video_info).get('url')
-            print("The resolved url: ", video_info['formats'][-1]['url'])
-            return video_info['formats'][-1]['url']
-            # except:
-            #     return  'An error has occured'
+
+        print(self.response_schema)
+        return  self.response_schema
 
 

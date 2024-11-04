@@ -7,14 +7,7 @@ query = QueryType()
 
 # Define resolvers
 
-@query.field("getDownloadLink")
+@query.field("getYouTubeVideoDownloadData")
 def download_link(_root, info, link):
 
-    print("Info: ", info)
-
-    resolved_download_link = YouTubeDownloader(link).get_download_link()
-    return [
-        {
-            "download_link": resolved_download_link,
-        }
-    ]
+    return [YouTubeDownloader(link).get_video_download_data()]
