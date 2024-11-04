@@ -64,50 +64,52 @@ def graphql_server():
 
 
 @app.route('/', methods=['GET'])
-# def test():
-#     return render_template("index.html")
 def index():
-    # video_url = request.args.get('url')
-    video_url = "https://www.youtube.com/watch?v=KEUUKA3fuaQ"
-    # if not video_url:
-    #     return jsonify({'error': 'Missing video URL'}), 400
+    return render_template("index.html")
 
-    # Check for allowed origin (if applicable)
-    origin = request.headers.get('Origin')
-    if origin and origin not in ALLOWED_ORIGINS:
-        return make_response(jsonify({'error': 'CORS not allowed'}), 403)
 
-    options = {
-        'format': 'best[ext=mp4]',
-        'outtmpl': '%(title)s.%(ext)s'
-    }
-    with YoutubeDL(options) as ydl:
+# def index():
+#     # video_url = request.args.get('url')
+#     video_url = "https://www.youtube.com/watch?v=KEUUKA3fuaQ"
+#     # if not video_url:
+#     #     return jsonify({'error': 'Missing video URL'}), 400
 
-        info_dict = ydl.extract_info(video_url, download=False)
-        video_url = info_dict['url']
+#     # Check for allowed origin (if applicable)
+#     origin = request.headers.get('Origin')
+#     if origin and origin not in ALLOWED_ORIGINS:
+#         return make_response(jsonify({'error': 'CORS not allowed'}), 403)
 
-        response = requests.get("https://manifest.googlevideo.com/api/manifest/hls_variant/expire/1730605908/ei/9J4mZ7HsGKDQp-oPiqDuqQg/ip/105.245.116.122/id/2e36717929deebb1/source/youtube/requiressl/yes/xpc/EgVo2aDSNQ%3D%3D/playback_host/rr2---sn-8vq5jvh15-2gts.googlevideo.com/met/1730584308%2C/mh/1M/mm/31%2C29/mn/sn-8vq5jvh15-2gts%2Csn-8vq5jvh15-wocl/ms/au%2Crdu/mv/m/mvi/2/pl/22/rms/au%2Cau/tx/51241482/txs/51241481%2C51241482%2C51241483%2C51241484%2C51241485%2C51241486/hfr/1/demuxed/1/tts_caps/1/maudio/1/pcm2/no/initcwndbps/516250/vprv/1/go/1/rqh/5/mt/1730583896/fvip/3/nvgoi/1/short_key/1/ncsapi/1/keepalive/yes/fexp/51312688%2C51326932/dover/13/itag/0/playlist_type/DVR/sparams/expire%2Cei%2Cip%2Cid%2Csource%2Crequiressl%2Cxpc%2Ctx%2Ctxs%2Chfr%2Cdemuxed%2Ctts_caps%2Cmaudio%2Cpcm2%2Cvprv%2Cgo%2Crqh%2Citag%2Cplaylist_type/sig/AJfQdSswRQIgRpUOvwLFNXCe5TWzDe2K17vfaXN3zLvkJL0fdl_decACIQDyVDIPVKty8bP6I0VY87eyxPfbZAWEik8N62vuRAR-zg%3D%3D/lsparams/playback_host%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps/lsig/ACJ0pHgwRgIhAJyFIlNvmq993P1bGpwUd3ZNrMZ31PxHJhksk-5YpuimAiEAjePr_jso7nbV1edawT6SC1t_TVex2PYdu1J6EQDGXQs%3D/file/index.m3u8", stream=True)
-        response.raise_for_status()
+#     options = {
+#         'format': 'best[ext=mp4]',
+#         'outtmpl': '%(title)s.%(ext)s'
+#     }
+#     with YoutubeDL(options) as ydl:
 
-        content_type = response.headers.get('Content-Type')
+#         info_dict = ydl.extract_info(video_url, download=False)
+#         video_url = info_dict['url']
 
-        # Create a response object
-        response_obj = make_response(response.content, 200)
+#         response = requests.get("https://manifest.googlevideo.com/api/manifest/hls_variant/expire/1730605908/ei/9J4mZ7HsGKDQp-oPiqDuqQg/ip/105.245.116.122/id/2e36717929deebb1/source/youtube/requiressl/yes/xpc/EgVo2aDSNQ%3D%3D/playback_host/rr2---sn-8vq5jvh15-2gts.googlevideo.com/met/1730584308%2C/mh/1M/mm/31%2C29/mn/sn-8vq5jvh15-2gts%2Csn-8vq5jvh15-wocl/ms/au%2Crdu/mv/m/mvi/2/pl/22/rms/au%2Cau/tx/51241482/txs/51241481%2C51241482%2C51241483%2C51241484%2C51241485%2C51241486/hfr/1/demuxed/1/tts_caps/1/maudio/1/pcm2/no/initcwndbps/516250/vprv/1/go/1/rqh/5/mt/1730583896/fvip/3/nvgoi/1/short_key/1/ncsapi/1/keepalive/yes/fexp/51312688%2C51326932/dover/13/itag/0/playlist_type/DVR/sparams/expire%2Cei%2Cip%2Cid%2Csource%2Crequiressl%2Cxpc%2Ctx%2Ctxs%2Chfr%2Cdemuxed%2Ctts_caps%2Cmaudio%2Cpcm2%2Cvprv%2Cgo%2Crqh%2Citag%2Cplaylist_type/sig/AJfQdSswRQIgRpUOvwLFNXCe5TWzDe2K17vfaXN3zLvkJL0fdl_decACIQDyVDIPVKty8bP6I0VY87eyxPfbZAWEik8N62vuRAR-zg%3D%3D/lsparams/playback_host%2Cmet%2Cmh%2Cmm%2Cmn%2Cms%2Cmv%2Cmvi%2Cpl%2Crms%2Cinitcwndbps/lsig/ACJ0pHgwRgIhAJyFIlNvmq993P1bGpwUd3ZNrMZ31PxHJhksk-5YpuimAiEAjePr_jso7nbV1edawT6SC1t_TVex2PYdu1J6EQDGXQs%3D/file/index.m3u8", stream=True)
+#         response.raise_for_status()
 
-        # Set Content-Disposition and Content-Type headers
-        response_obj.headers.set('Content-Disposition', f'attachment; filename="{"filename"}"')
-        response_obj.headers.set('Content-Type', content_type)
+#         content_type = response.headers.get('Content-Type')
 
-        # Add CORS headers (if necessary)
-        if origin:
-            response_obj.headers.set('Access-Control-Allow-Origin', origin)
-            response_obj.headers.set('Access-Control-Allow-Methods', 'GET')
-            response_obj.headers.set('Access-Control-Allow-Headers', 'Content-Type')
+#         # Create a response object
+#         response_obj = make_response(response.content, 200)
 
-        return response_obj
-    # except requests.exceptions.RequestException as e:
-    #     print(f"Error fetching video: {e}")
-    #     return jsonify({'error': 'Error fetching video'}), 500
+#         # Set Content-Disposition and Content-Type headers
+#         response_obj.headers.set('Content-Disposition', f'attachment; filename="{"filename"}"')
+#         response_obj.headers.set('Content-Type', content_type)
+
+#         # Add CORS headers (if necessary)
+#         if origin:
+#             response_obj.headers.set('Access-Control-Allow-Origin', origin)
+#             response_obj.headers.set('Access-Control-Allow-Methods', 'GET')
+#             response_obj.headers.set('Access-Control-Allow-Headers', 'Content-Type')
+
+#         return response_obj
+#     # except requests.exceptions.RequestException as e:
+#     #     print(f"Error fetching video: {e}")
+#     #     return jsonify({'error': 'Error fetching video'}), 500
 
 
 @app.route('/', methods=['POST'])
