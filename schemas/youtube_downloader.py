@@ -10,6 +10,7 @@ youtube_downloader_types = """
         audio_extension: String,
         filesize_approx: String,
         filesize: String, 
+        manifest_url: String,
         format: String,
     }
   
