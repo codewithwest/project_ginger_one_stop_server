@@ -11,7 +11,6 @@ class YouTubeDownloader:
 
     def remove_list_from_link(self):
         if "list" in self.download_link:
-            print(self.download_link)
             return  self.download_link.split("list=")[0]
 
 
@@ -80,7 +79,6 @@ class YouTubeDownloader:
         found_video_formats = self.get_all_available_formats(video_info_dictionary.get('formats'))
         self.generate_video_response_schema(video_info_dictionary, found_video_formats)
 
-        print(self.response_schema)
         return  self.response_schema
 
 
