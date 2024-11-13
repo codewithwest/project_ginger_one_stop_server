@@ -1,12 +1,13 @@
 import requests
-
+from flask_cors import CORS, cross_origin
 from resolvers.main_resolver import query
 from resolvers.youtube_downloader import YouTubeDownloader
 from schemas.type_definitions import type_definitions
 from ariadne import make_executable_schema, graphql_sync
-from flask import Flask, jsonify, request, render_template, make_response
+from flask import Flask, jsonify, request, render_template
 
 app = Flask(__name__, template_folder="pages/templates")
+CORS(app, supports_credentials=True, allow_headers=['Content-Type', 'Authorization'],)
 
 ALLOWED_ORIGINS = ['*']
 # from ariadne.constants import PLAYGROUND_HTML
@@ -15,6 +16,7 @@ ALLOWED_ORIGINS = ['*']
 schema = make_executable_schema(type_definitions, query)
 
 @app.route("/graphql", methods=["POST"])
+@cross_origin(origins='*')
 def graphql_server():
     data = request.get_json()
 
