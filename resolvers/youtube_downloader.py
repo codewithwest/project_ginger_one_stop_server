@@ -19,7 +19,6 @@ class YouTubeDownloader:
     def init_options(self):
         # Set options for the downloader
         self.options =  {
-
         }
 
     def get_all_available_formats(self, formats:list) -> list:
