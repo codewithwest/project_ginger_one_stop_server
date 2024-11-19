@@ -16,15 +16,15 @@ class ImageConverter:
         self.image_height = None
         self.new_image_name = None
 
-    def open_image(self) -> ImageFile:
+    def open_image(self) -> Image:
         self.new_image = Image.open(self.img)
         return self.new_image
 
-    def initialize_image_conversion_jpg(self) -> None:
-        self.new_image = self.new_image.convert("RGB")
+    def initialize_image_conversion_jpg(self) -> ImageFile:
+        return self.new_image.convert("RGB")
 
-    def initialize_image_conversion_png(self) -> None:
-        self.new_image = self.new_image.convert("RGBA")
+    def initialize_image_conversion_png(self) -> ImageFile:
+        return self.new_image.convert("RGBA")
 
     def get_image_width(self) -> int:
         return self.new_image.width
@@ -38,7 +38,7 @@ class ImageConverter:
         return self.get_image_width(), self.get_image_height()
 
     def get_possible_image_formats(self) -> dict[str, str]:
-        return Image.registered_extensions()
+        return self.new_image.registered_extensions()
 
     def get_possible_image_sizes(self) -> object:
         # and object with posible image sizes
@@ -84,17 +84,17 @@ class ImageConverter:
             "all_possible_portraits": all_possible_portraits
         }
 
-    def resize_image(self, image, width=None, height=None):
+    def resize_image(self, image, width, height):
         self.image_width, self.image_height = self.get_image_width_and_height()
-        if width is None and height is None:
+        if len(width) == 0 and len(height) == 0:
             width = self.image_width
             height = self.image_height
-        elif width is None:
+        elif len(width) == 0:
             width = self.image_width
-        elif height is None:
+        elif len(height) == 0:
             height = self.image_height
 
-        return image.resize([width, height])
+        return image.resize([int(height), int(width), ])
 
     def rename_image_with_underscore(self, new_image_name) -> str:
         return self.new_image_name.replace(" ", "_")
@@ -119,7 +119,12 @@ class ImageConverter:
             if _format is None:
                 _format = self.get_image_format(img)
             img_byte_array = io.BytesIO()
-            resized_image = self.resize_image(img,width, height)
+            if _format.lower() == "png":
+                img = self.initialize_image_conversion_png()
+            else:
+                img = self.initialize_image_conversion_jpg()
+
+            resized_image = self.resize_image(img, width, height)
             resized_image.save(img_byte_array, format=_format)
             img_byte_array.seek(0)
             return img_byte_array.read(), new_image_name

@@ -1,6 +1,3 @@
-import io
-
-from PIL import Image
 from flask_cors import CORS, cross_origin
 
 from resolvers.image_handler import ImageConverter
@@ -41,15 +38,18 @@ def upload_image():
         return jsonify({'error': 'No file part in the request'}), 400
 
     file = request.files['file']
-    request_data = request.form.to_dict()
-    height = request.form.get('height')
+
+    height =  request.form.get('height')
     width = request.form.get('width')
     _format = request.form.get('format')
 
     converted_image = ImageConverter(file.stream)
-    converted_image_bytes, new_image_name = converted_image.get_converted_image(new_image_name="dummy_image_name", height=height, width=width,_format= _format)
-    # Encode the image to base64
-    print(converted_image_bytes)
+    converted_image_bytes, new_image_name = converted_image.get_converted_image(
+        new_image_name="dummy_image_name",
+        height=height,
+        width=width,
+        _format= _format
+    )
     encoded_string = base64.b64encode(converted_image_bytes).decode('utf-8')
 
     return jsonify({'image_data': encoded_string})
