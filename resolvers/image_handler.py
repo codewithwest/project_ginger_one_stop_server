@@ -27,8 +27,6 @@ class ImageConverter:
 
             IOError("Image could not be converted")
 
-
-
         return self.new_image
 
     def initialize_image_conversion_jpg(self) -> ImageFile:
@@ -113,13 +111,6 @@ class ImageConverter:
     def rename_image_with_hyphen(self, new_image_name) -> str:
         return self.new_image_name.replace(" ", "-")
 
-    # def save_image_as_jpg(self, new_image_name, width=None, height=None):
-    #     self.open_image()
-    #     self.initialize_image_conversion_jpg()
-    #     # FolderHandler(self.converted_jpg_images).create_dirs_if_not_exists()
-    #     self.resize_image(width, height)
-    #     # self.new_image.save(f"{self.converted_jpg_images}{new_image_name}.jpg")
-    #     return self.new_image, new_image_name
 
     def get_image_format(self, img) -> str:
         return img.format

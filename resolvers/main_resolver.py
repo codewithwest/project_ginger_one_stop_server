@@ -1,6 +1,4 @@
-
 from ariadne import QueryType, MutationType
-
 
 from resolvers.youtube_downloader import YouTubeDownloader
 
