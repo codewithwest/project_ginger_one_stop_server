@@ -1,9 +1,9 @@
 # importing the module
 import os
 import io
+from logging import ERROR
 from PIL import Image
 from PIL.ImageFile import ImageFile
-
 
 class ImageConverter:
     def __init__(self, img):
@@ -17,7 +17,18 @@ class ImageConverter:
         self.new_image_name = None
 
     def open_image(self) -> Image:
-        self.new_image = Image.open(self.img)
+        try:
+            self.new_image = Image.open(self.img)
+        except IOError:
+            try:
+                self.new_image = Image.frombytes(self.img)
+            except IOError:
+                IOError("Image could not be converted")
+
+            IOError("Image could not be converted")
+
+
+
         return self.new_image
 
     def initialize_image_conversion_jpg(self) -> ImageFile:
