@@ -38,22 +38,24 @@ def graphql_server():
 @app.route('/uploadImage', methods=['POST'])
 @cross_origin(origins='*')
 def upload_image():
+
     if  len(request.files) == 0 and not request.form.get('file'):
         return jsonify({'error': 'No file part in the request'}), 400
 
     _file = request.files['file']
-
     height =  request.form.get('height')
     width = request.form.get('width')
     _format = request.form.get('format')
-
     converted_image = ImageConverter(_file.stream)
+
+    if _format == "jpg": # Handle format
+        _format = "JPEG"
 
     converted_image_bytes, new_image_name = converted_image.get_converted_image(
         new_image_name="dummy_image_name",
         height=height,
         width=width,
-        _format= _format
+        _format= _format.upper()
     )
     encoded_string = base64.b64encode(converted_image_bytes).decode('utf-8')
 
